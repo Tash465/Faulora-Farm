@@ -1,0 +1,411 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Your Cart - Faulora Farm{% endblock %}
+
+{% block meta %}
+<!-- SEO Enhancements -->
+<meta name="description" content="Review your cart at Faulora Farm: Fresh, organic produce ready for checkout. Shop Kenyan farm goods!">
+<meta name="keywords" content="cart, shopping cart, fresh produce, organic, Kenyan farm, Faulora Farm">
+<meta property="og:title" content="Your Cart - Faulora Farm">
+<meta property="og:description" content="Check out your fresh produce selections. Shop now!">
+<meta property="og:image" content="{% static 'images/farm-hero.jpg' %}">
+<meta property="og:url" content="{{ request.build_absolute_uri }}">
+{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+<style>
+/* === Global Styles: Farm-Inspired Base === */
+body {
+    background: linear-gradient(180deg, #f3fff3 0%, #e8f5e8 100%);
+    font-family: 'Poppins', sans-serif;
+    color: #2e7d32;
+    margin: 0;
+    padding: 0;
+    line-height: 1.6;
+    scroll-behavior: smooth;
+}
+
+/* Section Dividers: Visual Separation */
+.section-divider {
+    height: 50px;
+    background: linear-gradient(90deg, transparent, #c8e6c9, transparent);
+    margin: 40px 0;
+    position: relative;
+}
+.section-divider::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 20"><path d="M0 10 Q25 0 50 10 T100 10 V20 H0 Z" fill="%23c8e6c9"/></svg>');
+    background-size: 100px 20px;
+    background-repeat: repeat-x;
+}
+
+/* Animations: Subtle, Alluring Movements */
+.fade-in {
+    animation: fadeIn 1.2s ease-in;
+}
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+.hover-zoom {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.hover-zoom:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 20px rgba(76, 175, 80, 0.3);
+}
+
+/* Buttons: Enticing, Gradient-Powered */
+.btn {
+    background: linear-gradient(135deg, #4caf50, #2e7d32);
+    color: white;
+    padding: 12px 20px;
+    border-radius: 25px;
+    text-decoration: none;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3);
+    transition: all 0.3s ease;
+}
+.btn:hover {
+    background: linear-gradient(135deg, #2e7d32, #1b5e20);
+    transform: scale(1.05);
+    box-shadow: 0 6px 12px rgba(76, 175, 80, 0.4);
+}
+.btn:focus {
+    outline: 2px solid #4caf50;
+    outline-offset: 2px;
+}
+.btn-primary {
+    animation: pulse 2s infinite;
+}
+@keyframes pulse {
+    0% { box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3); }
+    50% { box-shadow: 0 8px 16px rgba(76, 175, 80, 0.5); }
+    100% { box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3); }
+}
+.remove-btn {
+    background: linear-gradient(135deg, #ff4d4d, #e60000);
+    color: white;
+    padding: 8px 12px;
+    border-radius: 15px;
+    text-decoration: none;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(255, 77, 77, 0.3);
+    transition: all 0.3s ease;
+}
+.remove-btn:hover {
+    background: linear-gradient(135deg, #e60000, #cc0000);
+    transform: scale(1.1);
+    box-shadow: 0 4px 10px rgba(255, 77, 77, 0.4);
+}
+
+/* Cart Container: Alluring Floating Card */
+.cart-container {
+    max-width: 1000px;
+    margin: 50px auto;
+    background: linear-gradient(145deg, #ffffff, #f1f8e9);
+    border-radius: 25px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    padding: 40px;
+    border: 3px solid #c8e6c9;
+    position: relative;
+    overflow: hidden;
+}
+.cart-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="1" fill="%23c8e6c9" opacity="0.1"/></svg>');
+    background-size: 20px 20px;
+    pointer-events: none;
+    z-index: -1;
+}
+.cart-header {
+    text-align: center;
+    margin-bottom: 30px;
+    color: #1b5e20;
+    font-size: 2.5em;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    position: relative;
+    z-index: 1;
+}
+
+/* Cart Table: Enhanced and Alluring */
+.cart-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 30px;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+.cart-table th, .cart-table td {
+    padding: 15px;
+    text-align: center;
+    border-bottom: 1px solid #e0f2e0;
+}
+.cart-table th {
+    background: linear-gradient(135deg, #4caf50, #2e7d32);
+    color: white;
+    font-weight: 700;
+    font-size: 1.1em;
+}
+.cart-table tr:hover {
+    background: rgba(200, 230, 201, 0.2);
+}
+.cart-table img {
+    width: 80px;
+    height: 80px;
+    border-radius: 15px;
+    object-fit: cover;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+.no-image {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, #c8e6c9, #a5d6a7);
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #2e7d32;
+    font-size: 1.5em;
+}
+
+/* Quantity Controls: Interactive and Styled */
+.quantity-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+.qty-btn {
+    width: 35px;
+    height: 35px;
+    border: 2px solid #4caf50;
+    background: #fff;
+    color: #4caf50;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 1.2em;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+.qty-btn:hover {
+    background: #4caf50;
+    color: #fff;
+}
+.qty-display {
+    min-width: 30px;
+    text-align: center;
+    font-weight: 600;
+    color: #2e7d32;
+}
+
+/* Summary: Prominent and Alluring */
+.summary {
+    text-align: right;
+    margin-top: 30px;
+    padding: 20px;
+    background: linear-gradient(145deg, #f1f8e9, #e8f5e8);
+    border-radius: 15px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border: 2px solid #c8e6c9;
+}
+.summary h3 {
+    color: #1b5e20;
+    font-size: 1.8em;
+    margin: 0;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+/* Cart Buttons: Organized and Alluring */
+.cart-buttons {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    margin-top: 40px;
+    gap: 15px;
+}
+.btn-secondary {
+    background: linear-gradient(135deg, #888, #666);
+}
+.btn-secondary:hover {
+    background: linear-gradient(135deg, #666, #444);
+}
+.btn-danger {
+    background: linear-gradient(135deg, #ff4d4d, #e60000);
+}
+.btn-danger:hover {
+    background: linear-gradient(135deg, #e60000, #cc0000);
+}
+
+/* Empty Cart: Attractive Placeholder */
+.empty-cart {
+    text-align: center;
+    padding: 60px 20px;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+.empty-cart i {
+    font-size: 4em;
+    color: #4caf50;
+    margin-bottom: 20px;
+}
+.empty-cart p {
+    font-size: 1.3em;
+    color: #2e7d32;
+    margin-bottom: 30px;
+}
+
+/* Responsive: Mobile-First */
+@media (max-width: 768px) {
+    .cart-container {
+        margin: 20px;
+        padding: 20px;
+    }
+    .cart-header {
+        font-size: 2em;
+    }
+    .cart-table th, .cart-table td {
+        padding: 10px;
+        font-size: 0.9em;
+    }
+    .cart-table img {
+        width: 60px;
+        height: 60px;
+    }
+    .cart-buttons {
+        flex-direction: column;
+        align-items: center;
+    }
+    .btn {
+        width: 100%;
+        justify-content: center;
+    }
+    .summary {
+        text-align: center;
+    }
+}
+</style>
+
+<main id="main-content">
+    <!-- Section Divider -->
+    <div class="section-divider"></div>
+
+    <div class="cart-container fade-in">
+        <h2 class="cart-header"><i class="fas fa-shopping-cart" aria-hidden="true"></i> Your Faulora Farm Cart</h2>
+
+        {% if cart_items %}
+            <table class="cart-table">
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Quantity</th>
+                        <th>Price</th>
+                        <th>Subtotal</th>
+                        <th>Remove</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in cart_items %}
+                        <tr>
+                            <td style="text-align:left;">
+                                <div style="display:flex; align-items:center; gap:15px;">
+                                    {% if item.product.image %}
+                                        <img src="{{ item.product.image.url }}" alt="Image of {{ item.product.name }}" loading="lazy">
+                                    {% else %}
+                                        <div class="no-image">
+                                            <i class="fas fa-leaf" aria-hidden="true"></i>
+                                        </div>
+                                    {% endif %}
+                                    <div>
+                                        <strong>{{ item.product.name }}</strong><br>
+                                        <small>{{ item.product.unit }}</small>
+                                    </div>
+                                </div>
+                            </td>
+
+                            <!-- Quantity Controls -->
+                            <td>
+                                <div class="quantity-controls">
+                                    <form action="{% url 'cart:update_cart' item.product.pk %}" method="POST" style="display:flex; align-items:center; gap:5px;">
+                                        {% csrf_token %}
+                                        <button type="submit" name="quantity" value="{{ item.quantity|add:'-1' }}" class="qty-btn" aria-label="Decrease quantity for {{ item.product.name }}">-</button>
+                                        <span class="qty-display">{{ item.quantity }}</span>
+                                        <button type="submit" name="quantity" value="{{ item.quantity|add:'1' }}" class="qty-btn" aria-label="Increase quantity for {{ item.product.name }}">+</button>
+                                    </form>
+                                </div>
+                            </td>
+
+                            <td>KSh {{ item.product.price }}</td>
+                            <td>KSh {{ item.subtotal|floatformat:2 }}</td>
+
+                            <!-- Remove Item -->
+                            <td>
+                                <a href="{% url 'cart:remove_from_cart' item.product.pk %}" class="remove-btn" aria-label="Remove {{ item.product.name }} from cart">
+                                    <i class="fas fa-times" aria-hidden="true"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <div class="summary">
+                <h3>Total: KSh {{ total_price|floatformat:2 }}</h3>
+            </div>
+
+            <div class="cart-buttons">
+                <a href="{% url 'products:product_list' %}" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left" aria-hidden="true"></i> Continue Shopping
+                </a>
+                <a href="{% url 'cart:clear_cart' %}" class="btn btn-danger" onclick="return confirm('Are you sure you want to clear your cart?');">
+                    <i class="fas fa-trash" aria-hidden="true"></i> Clear Cart
+                </a>
+
+                {% if user.is_authenticated %}
+                    <a href="{% url 'cart:checkout' %}" class="btn btn-primary">
+                        <i class="fas fa-check" aria-hidden="true"></i> Proceed to Checkout
+                    </a>
+                {% else %}
+                    <a href="{% url 'accounts:login' %}?next={% url 'cart:checkout' %}" class="btn btn-primary">
+                        <i class="fas fa-sign-in-alt" aria-hidden="true"></i> Login to Checkout
+                    </a>
+                {% endif %}
+            </div>
+
+        {% else %}
+            <div class="empty-cart">
+                <i class="fas fa-shopping-cart" aria-hidden="true"></i>
+                <p>Your cart is empty </p>
+                <a href="{% url 'products:product_list' %}" class="btn">Browse Products</a>
+            </div>
+        {% endif %}
+    </div>
+</main>
+
+{% endblock %}
