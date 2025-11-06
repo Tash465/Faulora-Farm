@@ -1,5 +1,6 @@
 from pathlib import Path
 import os
+from django.contrib.messages import constants as messages
 
 # --------------------------------------------------
 # BASE SETTINGS
@@ -15,7 +16,6 @@ ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1'
 ]
- # Replace with your Render URL
 
 # --------------------------------------------------
 # APPLICATIONS
@@ -28,10 +28,14 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    'products',   # your existing apps
+    'products',
     'cart',
     'accounts',
     'orders',
+
+    # Cloudinary apps (for media hosting)
+    'cloudinary',
+    'cloudinary_storage',
 ]
 
 # --------------------------------------------------
@@ -88,10 +92,10 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 STATICFILES_DIRS = [
-    BASE_DIR / 'products' / 'static',  # Your app's static folder
+    BASE_DIR / 'products' / 'static',
 ]
 
-STATIC_ROOT = BASE_DIR / 'staticfiles'  # Collected static files for deployment
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
@@ -102,7 +106,7 @@ MEDIA_ROOT = BASE_DIR / 'media'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates'],  # Optional global templates folder
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -126,7 +130,18 @@ LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 
 # Messages styling
-from django.contrib.messages import constants as messages
 MESSAGE_TAGS = {
     messages.ERROR: 'danger',
 }
+
+# --------------------------------------------------
+# 🌤 CLOUDINARY CONFIGURATION
+# --------------------------------------------------
+# Make sure to replace the placeholders below with your real API credentials
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': 'dhcwh9q6v',
+    'API_KEY': '131213486265151',
+    'API_SECRET': 'Ok9t2ycWlqcv86uRt4iytOsYbRY',
+}
+
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
