@@ -10,7 +10,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'fallback-secret')
 DEBUG = os.environ.get('DJANGO_DEBUG', 'False') == 'True'
 
-ALLOWED_HOSTS = ['faulora-farm-1.onrender.com']  # Replace with your Render URL
+ALLOWED_HOSTS = [
+    'faulora-farm.onrender.com',  # ✅ Correct Render domain
+    'localhost',
+    '127.0.0.1'
+]
+ # Replace with your Render URL
 
 # --------------------------------------------------
 # APPLICATIONS
