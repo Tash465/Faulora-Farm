@@ -7,12 +7,12 @@ from django.contrib.messages import constants as messages
 # --------------------------------------------------
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Use environment variables for security
+# Security keys and debug mode
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'fallback-secret')
 DEBUG = os.environ.get('DJANGO_DEBUG', 'False') == 'True'
 
 ALLOWED_HOSTS = [
-    'faulora-farm.onrender.com',  # ✅ Correct Render domain
+    'faulora-farm.onrender.com',  # ✅ Your Render domain
     'localhost',
     '127.0.0.1'
 ]
@@ -21,6 +21,7 @@ ALLOWED_HOSTS = [
 # APPLICATIONS
 # --------------------------------------------------
 INSTALLED_APPS = [
+    # Django core apps
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -28,12 +29,13 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    # Project apps
     'products',
     'cart',
     'accounts',
     'orders',
 
-    # Cloudinary apps (for media hosting)
+    # Third-party
     'cloudinary',
     'cloudinary_storage',
 ]
@@ -43,13 +45,13 @@ INSTALLED_APPS = [
 # --------------------------------------------------
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # ✅ Must come right after SecurityMiddleware
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',  # For static files
 ]
 
 # --------------------------------------------------
@@ -59,7 +61,7 @@ ROOT_URLCONF = 'faulora_farm.urls'
 WSGI_APPLICATION = 'faulora_farm.wsgi.application'
 
 # --------------------------------------------------
-# DATABASE (SQLite for Render)
+# DATABASE (SQLite — good for Render free tier)
 # --------------------------------------------------
 DATABASES = {
     'default': {
@@ -91,14 +93,20 @@ USE_TZ = True
 # --------------------------------------------------
 STATIC_URL = '/static/'
 
+# Location for static files inside your project
 STATICFILES_DIRS = [
     BASE_DIR / 'products' / 'static',
 ]
 
+# Directory where static files will be collected during deployment
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
+# Media files (uploaded images, etc.)
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+
+# Use WhiteNoise to serve static files in production
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # --------------------------------------------------
 # TEMPLATES
@@ -106,7 +114,7 @@ MEDIA_ROOT = BASE_DIR / 'media'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates'],
+        'DIRS': [BASE_DIR / 'templates'],  # Your main templates directory
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -125,11 +133,12 @@ TEMPLATES = [
 # --------------------------------------------------
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# Login/logout redirects
+# --------------------------------------------------
+# AUTHENTICATION & MESSAGES
+# --------------------------------------------------
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 
-# Messages styling
 MESSAGE_TAGS = {
     messages.ERROR: 'danger',
 }
@@ -137,7 +146,7 @@ MESSAGE_TAGS = {
 # --------------------------------------------------
 # 🌤 CLOUDINARY CONFIGURATION
 # --------------------------------------------------
-# Make sure to replace the placeholders below with your real API credentials
+# Replace these with your real credentials (or set them in Render environment variables)
 CLOUDINARY_STORAGE = {
     'CLOUD_NAME': 'dhcwh9q6v',
     'API_KEY': '131213486265151',
