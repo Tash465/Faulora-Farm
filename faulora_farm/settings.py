@@ -148,9 +148,10 @@ MESSAGE_TAGS = {
 # --------------------------------------------------
 # Replace these with your real credentials (or set them in Render environment variables)
 CLOUDINARY_STORAGE = {
-    'CLOUD_NAME': 'dhcwh9q6v',
-    'API_KEY': '131213486265151',
-    'API_SECRET': 'Ok9t2ycWlqcv86uRt4iytOsYbRY',
+    'CLOUD_NAME': os.environ.get('CLOUDINARY_CLOUD_NAME'),
+    'API_KEY': os.environ.get('CLOUDINARY_API_KEY'),
+    'API_SECRET': os.environ.get('CLOUDINARY_API_SECRET'),
 }
+
 
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
