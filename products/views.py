@@ -90,16 +90,34 @@ def add_to_cart(request, pk):
         save_cart(request, cart)
 
         total_items = sum(cart.values())
+        
+        # Build cart summary for JSON response
+        cart_items_summary = []
+        cart_total_price = 0
+        for item_pk, qty in cart.items():
+            try:
+                item_product = get_object_or_404(Product, pk=item_pk)
+                subtotal = item_product.price * qty
+                cart_total_price += subtotal
+                cart_items_summary.append({
+                    'product_name': item_product.name,
+                    'quantity': qty,
+                    'subtotal': subtotal
+                })
+            except Exception:
+                pass  # Skip invalid items
 
         # Return JSON if AJAX
         if request.headers.get('x-requested-with') == 'XMLHttpRequest':
             return JsonResponse({
                 'success': True,
                 'product_name': product.name,
-                'total_items': total_items
+                'total_items': total_items,
+                'cart_items_summary': cart_items_summary,
+                'cart_total_price': cart_total_price
             })
 
-        messages.success(request, f"✅ {product.name} added to cart!")
+        messages.success(request, f"{product.name} added to cart!")
 
     except Exception:
         if request.headers.get('x-requested-with') == 'XMLHttpRequest':
@@ -116,7 +134,7 @@ def remove_from_cart(request, pk):
         if str(pk) in cart:
             del cart[str(pk)]
             save_cart(request, cart)
-            messages.info(request, "❌ Item removed from cart.")
+            messages.info(request, "Item removed from cart.")
         else:
             messages.warning(request, "Item not found in cart.")
     except Exception:
@@ -147,7 +165,7 @@ def update_cart(request, pk):
 
 
 def cart(request):
-    """Display all products in the shopping cart."""
+    """Display all products in the shopping cart. Supports AJAX GET for JSON summary."""
     cart = get_cart(request)
     cart_items = []
     total = 0
@@ -164,6 +182,21 @@ def cart(request):
             })
         except Exception:
             messages.warning(request, f"Some items in your cart are no longer available.")
+
+    # Return JSON for AJAX GET requests
+    if request.method == 'GET' and request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        cart_items_summary = [
+            {
+                'product_name': item['product'].name,
+                'quantity': item['quantity'],
+                'subtotal': item['subtotal']
+            }
+            for item in cart_items
+        ]
+        return JsonResponse({
+            'cart_items_summary': cart_items_summary,
+            'cart_total_price': total
+        })
 
     context = {'cart_items': cart_items, 'total': total}
     return render(request, 'cart/cart.html', context)
@@ -220,7 +253,7 @@ def checkout(request):
                     price=item['product'].price
                 )
             request.session['cart'] = {}
-            messages.success(request, "✅ Order placed successfully!")
+            messages.success(request, "Order placed successfully!")
             return redirect('cart:thankyou', order_id=order.id)
         except Exception:
             messages.error(request, "Error placing order. Please try again.")

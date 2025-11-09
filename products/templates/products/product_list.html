@@ -1,103 +1,407 @@
-{% extends 'base.html' %}
-{% load static %}
+/* ===========================
+   General Styles for product_list.html
+=========================== */
+.fade-in {
+    animation: fadeIn 0.8s ease-out;
+}
 
-{% block title %}Shop Fresh Produce - Faulora Farm{% endblock %}
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
 
-{% block meta %}
-<meta name="description" content="Shop fresh, organic produce from Faulora Farm. Browse fruits, vegetables, dairy, and more—locally grown in Kenya.">
-<meta name="keywords" content="fresh produce, organic fruits, vegetables, dairy, Kenyan farm, Faulora Farm">
-<meta property="og:title" content="Shop Fresh Produce - Faulora Farm">
-<meta property="og:description" content="Discover locally grown produce. Shop now!">
-<meta property="og:image" content="{% static 'images/farm-hero.jpg' %}">
-<meta property="og:url" content="{{ request.build_absolute_uri }}">
-{% endblock %}
+/* ===========================
+   Hero Section
+=========================== */
+.hero {
+    background: linear-gradient(135deg, #4caf50 0%, #81c784 100%);
+    color: white;
+    text-align: center;
+    padding: 60px 20px;
+    margin-bottom: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
 
-{% block content %}
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-<link rel="stylesheet" href="{% static 'css/product_list.css' %}">
+.hero h1 {
+    font-size: 2.5rem;
+    margin-bottom: 15px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
 
-<main id="main-content">
-    <!-- Hero Section -->
-    <section class="hero fade-in" role="banner" aria-labelledby="hero-title">
-        <h1 id="hero-title">Faulora Farm Shop</h1>
-        <p>Fresh, locally grown produce — straight from our lush fields to your table.</p>
-    </section>
+.hero p {
+    font-size: 1.2rem;
+    max-width: 600px;
+    margin: 0 auto;
+}
 
-    <div class="section-divider"></div>
+/* ===========================
+   Section Divider
+=========================== */
+.section-divider {
+    height: 2px;
+    background: linear-gradient(90deg, #4caf50, #81c784);
+    margin: 30px 0;
+}
 
-    <!-- Search & Filter -->
-    <section class="search-bar fade-in" aria-labelledby="filter-heading">
-        <form method="get" class="filter-bar">
-            <input type="text" name="search" placeholder="Search for fruits, vegetables, or dairy..."
-                   value="{{ search_query|default:'' }}" class="search-input" aria-label="Search products">
-            <select name="category" class="category-select" aria-label="Filter products by category">
-                <option value="">All Categories</option>
-                {% for key, value in categories.items %}
-                    <option value="{{ key }}" {% if selected_category == key %}selected{% endif %}>{{ value }}</option>
-                {% endfor %}
-            </select>
-            <button type="submit" class="filter-btn" aria-label="Apply filters">
-                <i class="fas fa-filter" aria-hidden="true"></i> Filter
-            </button>
-        </form>
-    </section>
+/* ===========================
+   Search & Filter Bar
+=========================== */
+.search-bar {
+    margin-bottom: 30px;
+}
 
-    <!-- Product Grid -->
-    <section class="product-grid-section fade-in" aria-labelledby="products-heading">
-        <div class="product-grid">
-            {% for product in products %}
-                <div class="product-card hover-zoom" data-name="{{ product.name|lower }}">
-                    <a href="{% url 'products:product_detail' product.pk %}" aria-label="View details for {{ product.name }}">
-                        {% if product.image %}
-                            <img src="{{ product.image.url }}" alt="Image of {{ product.name }}" class="product-image" loading="lazy">
-                        {% else %}
-                            <div class="product-image no-img-box">
-                                <i class="fas fa-leaf" aria-hidden="true"></i>
-                                <span>No Image</span>
-                            </div>
-                        {% endif %}
-                    </a>
-                    <div class="product-details">
-                        <h3>{{ product.name }}</h3>
-                        <p class="product-price">KSh {{ product.price }} / {{ product.unit }}</p>
-                        <form action="{% url 'products:add_to_cart' product.pk %}" method="post" class="add-to-cart-form">
-                            {% csrf_token %}
-                            <button type="submit" class="add-to-cart-btn" aria-label="Add {{ product.name }} to cart">
-                                <i class="fas fa-cart-plus"></i> Add to Cart
-                            </button>
-                        </form>
-                    </div>
-                </div>
-            {% empty %}
-                <div class="no-products">
-                    <i class="fas fa-search"></i>
-                    <p>No products found. Try adjusting your search or filters.</p>
-                    <a href="{% url 'products:product_list' %}" class="btn">Browse All</a>
-                </div>
-            {% endfor %}
-        </div>
-    </section>
+.filter-bar {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    flex-wrap: wrap;
+    background: #f9f9f9;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
 
-    <!-- Pagination -->
-    {% if products.has_other_pages %}
-    <section class="pagination fade-in" aria-labelledby="pagination-heading">
-        <div class="pagination-controls">
-            {% if products.has_previous %}
-                <a href="?page={{ products.previous_page_number }}{% if selected_category %}&category={{ selected_category }}{% endif %}{% if search_query %}&search={{ search_query }}{% endif %}" class="pagination-btn">
-                    <i class="fas fa-chevron-left"></i> Previous
-                </a>
-            {% endif %}
-            <span class="pagination-info">Page {{ products.number }} of {{ products.paginator.num_pages }}</span>
-            {% if products.has_next %}
-                <a href="?page={{ products.next_page_number }}{% if selected_category %}&category={{ selected_category }}{% endif %}{% if search_query %}&search={{ search_query }}{% endif %}" class="pagination-btn">
-                    Next <i class="fas fa-chevron-right"></i>
-                </a>
-            {% endif %}
-        </div>
-    </section>
-    {% endif %}
-</main>
+.search-input {
+    flex: 1;
+    min-width: 200px;
+    padding: 12px 15px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+}
 
-<!-- JS for AJAX Add to Cart & Search -->
-<script src="{% static 'js/product_list.js' %}"></script>
-{% endblock %}
+.search-input:focus {
+    border-color: #4caf50;
+    outline: none;
+}
+
+.category-select {
+    padding: 12px 15px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    font-size: 1rem;
+    min-width: 150px;
+    transition: border-color 0.3s ease;
+}
+
+.category-select:focus {
+    border-color: #4caf50;
+    outline: none;
+}
+
+.filter-btn {
+    background: linear-gradient(45deg, #4caf50, #66bb6a);
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.filter-btn:hover {
+    background: linear-gradient(45deg, #66bb6a, #81c784);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(76, 175, 80, 0.3);
+}
+
+/* ===========================
+   Product Grid Section
+=========================== */
+.product-grid-section {
+    margin-bottom: 40px;
+}
+
+.product-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 25px;
+}
+
+/* Product Card */
+.product-card {
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+}
+
+.product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    border-color: #4caf50;
+}
+
+.product-image {
+    width: 100%;
+    height: 220px;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.product-card:hover .product-image {
+    transform: scale(1.05);
+}
+
+.no-img-box {
+    height: 220px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: #f0f0f0;
+    color: #666;
+    font-size: 1.5rem;
+}
+
+.product-details {
+    padding: 20px;
+    flex-grow: 1;
+    text-align: center;
+}
+
+.product-details h3 {
+    font-size: 1.3rem;
+    margin-bottom: 10px;
+    color: #2e7d32;
+}
+
+.product-price {
+    font-size: 1.1rem;
+    color: #4caf50;
+    margin-bottom: 15px;
+    font-weight: bold;
+}
+
+.add-to-cart-btn {
+    background: linear-gradient(45deg, #4caf50, #66bb6a);
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+}
+
+.add-to-cart-btn:hover {
+    background: linear-gradient(45deg, #66bb6a, #81c784);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(76, 175, 80, 0.3);
+}
+
+/* No Products Message */
+.no-products {
+    text-align: center;
+    padding: 50px 20px;
+    color: #666;
+}
+
+.no-products i {
+    font-size: 3rem;
+    margin-bottom: 15px;
+    color: #4caf50;
+}
+
+.no-products p {
+    font-size: 1.1rem;
+    margin-bottom: 20px;
+}
+
+.no-products .btn {
+    background: #4caf50;
+    color: white;
+    padding: 12px 25px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: background 0.3s ease;
+}
+
+.no-products .btn:hover {
+    background: #66bb6a;
+}
+
+/* ===========================
+   Pagination
+=========================== */
+.pagination {
+    text-align: center;
+    margin-top: 40px;
+}
+
+.pagination-controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+}
+
+.pagination-btn {
+    background: #f9f9f9;
+    color: #333;
+    padding: 12px 20px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.pagination-btn:hover {
+    background: #4caf50;
+    color: white;
+    border-color: #4caf50;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(76, 175, 80, 0.3);
+}
+
+.pagination-info {
+    font-size: 1rem;
+    color: #666;
+}
+
+/* ===========================
+   Responsive Adjustments
+=========================== */
+/* Tablet (769px to 1023px) */
+@media (max-width: 1023px) and (min-width: 769px) {
+    .hero {
+        padding: 50px 15px;
+    }
+    .hero h1 {
+        font-size: 2.2rem;
+    }
+    .hero p {
+        font-size: 1.1rem;
+    }
+    .filter-bar {
+        padding: 15px;
+        gap: 10px;
+    }
+    .search-input, .category-select {
+        flex: 1;
+        min-width: 150px;
+    }
+    .product-grid {
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+    }
+    .product-image, .no-img-box {
+        height: 200px;
+    }
+    .pagination-controls {
+        gap: 15px;
+    }
+}
+
+/* Mobile (481px to 767px) */
+@media (max-width: 767px) {
+    .hero {
+        padding: 40px 15px;
+    }
+    .hero h1 {
+        font-size: 1.8rem;
+    }
+    .hero p {
+        font-size: 1rem;
+    }
+    .filter-bar {
+        flex-direction: column;
+        align-items: stretch;
+        padding: 15px;
+        gap: 10px;
+    }
+    .search-input, .category-select {
+        width: 100%;
+        padding: 14px 15px; /* Min 44px height */
+        min-height: 44px;
+    }
+    .filter-btn {
+        width: 100%;
+        padding: 14px 20px;
+        min-height: 44px;
+    }
+    .product-grid {
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 15px;
+    }
+    .product-image, .no-img-box {
+        height: 180px;
+    }
+    .product-details {
+        padding: 15px;
+    }
+    .product-details h3 {
+        font-size: 1.2rem;
+    }
+    .add-to-cart-btn {
+        padding: 14px 20px;
+        min-height: 44px;
+    }
+    .pagination-controls {
+        flex-direction: column;
+        gap: 10px;
+    }
+    .pagination-btn {
+        width: 100%;
+        padding: 14px 20px;
+        min-height: 44px;
+        justify-content: center;
+    }
+}
+
+/* Small Mobile (320px to 480px) */
+@media (max-width: 480px) {
+    .hero {
+        padding: 30px 10px;
+    }
+    .hero h1 {
+        font-size: 1.5rem;
+    }
+    .hero p {
+        font-size: 0.9rem;
+    }
+    .filter-bar {
+        padding: 10px;
+    }
+    .product-grid {
+        grid-template-columns: 1fr; /* Single column */
+        gap: 10px;
+    }
+    .product-image, .no-img-box {
+        height: 150px;
+    }
+    .product-details h3 {
+        font-size: 1.1rem;
+    }
+    .product-price {
+        font-size: 1rem;
+    }
+    .add-to-cart-btn {
+        font-size: 0.9rem;
+    }
+    .pagination-info {
+        font-size: 0.9rem;
+    }
+}

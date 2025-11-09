@@ -41,7 +41,7 @@ class Product(models.Model):
     available = models.BooleanField(default=True)
     date_added = models.DateTimeField(auto_now_add=True)
 
-    # ✅ Featured flag for seasonal or special products
+    # Featured flag for seasonal or special products
     featured = models.BooleanField(default=False, help_text="Tick to display this product in the featured section on the homepage")
 
     class Meta:
