@@ -281,8 +281,35 @@ body {
     margin-bottom: 30px;
 }
 
-/* Responsive: Mobile-First */
-@media (max-width: 768px) {
+/* Responsive: Expanded Breakpoints for Seamless Adaptation */
+@media (max-width: 1023px) and (min-width: 769px) { /* Tablet */
+    .cart-container {
+        margin: 40px 20px;
+        padding: 30px;
+    }
+    .cart-header {
+        font-size: 2.2em;
+    }
+    .cart-table th, .cart-table td {
+        padding: 12px;
+        font-size: 1em;
+    }
+    .cart-table img {
+        width: 70px;
+        height: 70px;
+    }
+    .summary {
+        padding: 18px;
+    }
+    .summary h3 {
+        font-size: 1.6em;
+    }
+    .cart-buttons {
+        gap: 12px;
+    }
+}
+
+@media (max-width: 767px) { /* Mobile (481-767px) - Your existing, with touch refinements */
     .cart-container {
         margin: 20px;
         padding: 20px;
@@ -305,9 +332,73 @@ body {
     .btn {
         width: 100%;
         justify-content: center;
+        padding: 14px 20px; /* Min 44px height for touch */
+        min-height: 44px;
     }
     .summary {
         text-align: center;
+    }
+}
+
+@media (max-width: 480px) { /* Small Mobile (320-480px) */
+    .cart-container {
+        margin: 15px;
+        padding: 15px;
+    }
+    .cart-header {
+        font-size: 1.8em;
+    }
+    .cart-table {
+        display: none; /* Hide table on very small screens */
+    }
+    .cart-items-mobile {
+        display: block; /* Show card layout instead */
+    }
+    .cart-item-card {
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: 15px;
+        padding: 15px;
+        margin-bottom: 15px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+    .cart-item-card img {
+        width: 100%;
+        height: 120px;
+        border-radius: 10px;
+    }
+    .cart-item-card .details {
+        text-align: center;
+    }
+    .cart-item-card .quantity-controls {
+        justify-content: space-between;
+    }
+    .cart-item-card .qty-btn {
+        width: 40px;
+        height: 40px;
+    }
+    .btn {
+        padding: 16px 20px; /* Ensure touch-friendly */
+        min-height: 48px;
+        font-size: 0.95em;
+    }
+    .summary {
+        padding: 15px;
+        text-align: center;
+    }
+    .summary h3 {
+        font-size: 1.5em;
+    }
+    .empty-cart {
+        padding: 40px 15px;
+    }
+    .empty-cart i {
+        font-size: 3em;
+    }
+    .empty-cart p {
+        font-size: 1.1em;
     }
 }
 </style>
@@ -409,3 +500,4 @@ body {
 </main>
 
 {% endblock %}
+
