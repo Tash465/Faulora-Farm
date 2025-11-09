@@ -281,35 +281,8 @@ body {
     margin-bottom: 30px;
 }
 
-/* Responsive: Expanded Breakpoints for Seamless Adaptation */
-@media (max-width: 1023px) and (min-width: 769px) { /* Tablet */
-    .cart-container {
-        margin: 30px 20px;
-        padding: 30px;
-    }
-    .cart-header {
-        font-size: 2.2em;
-    }
-    .cart-table th, .cart-table td {
-        padding: 12px;
-        font-size: 1em;
-    }
-    .cart-table img {
-        width: 70px;
-        height: 70px;
-    }
-    .summary {
-        padding: 18px;
-    }
-    .summary h3 {
-        font-size: 1.6em;
-    }
-    .cart-buttons {
-        gap: 12px;
-    }
-}
-
-@media (max-width: 767px) { /* Mobile (481-767px) - Your existing, with refinements */
+/* Responsive: Mobile-First */
+@media (max-width: 768px) {
     .cart-container {
         margin: 20px;
         padding: 20px;
@@ -332,92 +305,9 @@ body {
     .btn {
         width: 100%;
         justify-content: center;
-        padding: 14px 20px; /* Min 44px height */
-        min-height: 44px;
-    }
-    .remove-btn {
-        padding: 10px 15px;
-        min-height: 44px;
-    }
-    .qty-btn {
-        width: 40px;
-        height: 40px;
-        min-height: 44px; /* Ensure touch-friendly */
     }
     .summary {
         text-align: center;
-    }
-}
-
-@media (max-width: 480px) { /* Small Mobile (320-480px) */
-    .cart-container {
-        margin: 10px;
-        padding: 15px;
-    }
-    .cart-header {
-        font-size: 1.8em;
-    }
-    /* Stack table for better readability */
-    .cart-table, .cart-table thead, .cart-table tbody, .cart-table th, .cart-table td, .cart-table tr {
-        display: block;
-    }
-    .cart-table thead tr {
-        position: absolute;
-        top: -9999px;
-        left: -9999px;
-    }
-    .cart-table tr {
-        border: 1px solid #e0f2e0;
-        border-radius: 10px;
-        margin-bottom: 15px;
-        padding: 10px;
-        background: rgba(255, 255, 255, 0.9);
-    }
-    .cart-table td {
-        border: none;
-        position: relative;
-        padding-left: 50%;
-        text-align: left;
-        font-size: 0.85em;
-    }
-    .cart-table td:before {
-        content: attr(data-label);
-        position: absolute;
-        left: 10px;
-        width: 45%;
-        padding-right: 10px;
-        white-space: nowrap;
-        font-weight: bold;
-        color: #2e7d32;
-    }
-    .cart-table img {
-        width: 50px;
-        height: 50px;
-    }
-    .btn {
-        font-size: 0.9em;
-        padding: 16px 20px;
-        min-height: 48px;
-    }
-    .remove-btn {
-        padding: 12px 18px;
-        min-height: 48px;
-    }
-    .qty-btn {
-        width: 45px;
-        height: 45px;
-    }
-    .summary h3 {
-        font-size: 1.5em;
-    }
-    .empty-cart {
-        padding: 40px 15px;
-    }
-    .empty-cart i {
-        font-size: 3em;
-    }
-    .empty-cart p {
-        font-size: 1.1em;
     }
 }
 </style>
@@ -443,7 +333,7 @@ body {
                 <tbody>
                     {% for item in cart_items %}
                         <tr>
-                            <td data-label="Product" style="text-align:left;">
+                            <td style="text-align:left;">
                                 <div style="display:flex; align-items:center; gap:15px;">
                                     {% if item.product.image %}
                                         <img src="{{ item.product.image.url }}" alt="Image of {{ item.product.name }}" loading="lazy">
@@ -460,7 +350,7 @@ body {
                             </td>
 
                             <!-- Quantity Controls -->
-                            <td data-label="Quantity">
+                            <td>
                                 <div class="quantity-controls">
                                     <form action="{% url 'cart:update_cart' item.product.pk %}" method="POST" style="display:flex; align-items:center; gap:5px;">
                                         {% csrf_token %}
@@ -471,11 +361,10 @@ body {
                                 </div>
                             </td>
 
-                            <td data-label="Price">KSh {{ item.product.price }}</td>
-                            <td data-label="Subtotal">KSh {{ item.subtotal|floatformat:2 }}</td>
+                            <td>KSh {{ item.product.price }}</td>
+                            <td>KSh {{ item.subtotal|floatformat:2 }}</td>
 
-                           
-                             <!-- Remove Item -->
+                            <!-- Remove Item -->
                             <td>
                                 <a href="{% url 'cart:remove_from_cart' item.product.pk %}" class="remove-btn" aria-label="Remove {{ item.product.name }} from cart">
                                     <i class="fas fa-times" aria-hidden="true"></i>
