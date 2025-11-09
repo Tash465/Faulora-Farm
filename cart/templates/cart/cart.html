@@ -281,6 +281,37 @@ body {
     margin-bottom: 30px;
 }
 
+/* Mobile Card Layout: For Small Screens */
+.cart-items-mobile {
+    display: none; /* Hidden by default */
+}
+.cart-item-card {
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 15px;
+    padding: 15px;
+    margin-bottom: 15px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.cart-item-card img {
+    width: 100%;
+    height: 120px;
+    border-radius: 10px;
+    object-fit: cover;
+}
+.cart-item-card .details {
+    text-align: center;
+}
+.cart-item-card .quantity-controls {
+    justify-content: space-between;
+}
+.cart-item-card .qty-btn {
+    width: 40px;
+    height: 40px;
+}
+
 /* Responsive: Expanded Breakpoints for Seamless Adaptation */
 @media (max-width: 1023px) and (min-width: 769px) { /* Tablet */
     .cart-container {
@@ -309,7 +340,7 @@ body {
     }
 }
 
-@media (max-width: 767px) { /* Mobile (481-767px) - Your existing, with touch refinements */
+@media (max-width: 767px) { /* Mobile (481-767px) */
     .cart-container {
         margin: 20px;
         padding: 20px;
@@ -368,6 +399,7 @@ body {
         width: 100%;
         height: 120px;
         border-radius: 10px;
+        object-fit: cover;
     }
     .cart-item-card .details {
         text-align: center;
@@ -411,6 +443,7 @@ body {
         <h2 class="cart-header"><i class="fas fa-shopping-cart" aria-hidden="true"></i> Your Faulora Farm Cart</h2>
 
         {% if cart_items %}
+            <!-- Desktop/Tablet Table View -->
             <table class="cart-table">
                 <thead>
                     <tr>
@@ -474,7 +507,7 @@ body {
                 <a href="{% url 'products:product_list' %}" class="btn btn-secondary">
                     <i class="fas fa-arrow-left" aria-hidden="true"></i> Continue Shopping
                 </a>
-                <a href="{% url 'cart:clear_cart' %}" class="btn btn-danger" onclick="return confirm('Are you sure you want to clear your cart?');">
+                <a href="{% url 'cart:clear_cart' %}" class="btn btn-danger" onclick=" return confirm('Are you sure you want to clear your cart?');">
                     <i class="fas fa-trash" aria-hidden="true"></i> Clear Cart
                 </a>
 
@@ -500,4 +533,3 @@ body {
 </main>
 
 {% endblock %}
-
