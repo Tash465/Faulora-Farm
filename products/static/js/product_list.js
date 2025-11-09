@@ -7,6 +7,54 @@ document.addEventListener('DOMContentLoaded', function () {
     const cartPreviewElem = document.querySelector('.cart-preview'); // Mini cart preview
 
     // =========================
+    // Helper: Parse initial cart count from header
+    // =========================
+    function getInitialCartCount() {
+        const text = cartCountElem ? cartCountElem.textContent : '';
+        const match = text.match(/Cart \$(\d+)\$/);
+        return match ? parseInt(match[1], 10) : 0;
+    }
+
+    // =========================
+    // Helper: Load and display mini cart preview
+    // =========================
+    function loadCartPreview() {
+        // Assuming you have an endpoint that returns cart summary as JSON (e.g., GET to cart detail URL)
+        // If not, you'll need to add one in your Django views (e.g., a view that returns cart_items_summary and cart_total_price)
+        const cartUrl = '{% url "cart:cart_detail" %}'; // Or a dedicated AJAX endpoint like '{% url "cart:cart_summary" %}'
+
+        fetch(cartUrl, {
+            method: 'GET',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.cart_items_summary && data.cart_total_price !== undefined) {
+                let html = '';
+                data.cart_items_summary.forEach(item => {
+                    html += `<div>${item.product_name} × ${item.quantity} - KSh ${item.subtotal.toFixed(2)}</div>`;
+                });
+                html += `<strong>Total: KSh ${data.cart_total_price.toFixed(2)}</strong>`;
+                html += `<a href="{% url 'cart:cart_detail' %}" class="view-cart-link">View Full Cart 🛒</a>`;
+                cartPreviewElem.innerHTML = html;
+            }
+        })
+        .catch(err => {
+            console.error('Error loading cart preview:', err);
+        });
+    }
+
+    // =========================
+    // Load initial cart preview if cart has items
+    // =========================
+    const initialCount = getInitialCartCount();
+    if (initialCount > 0 && cartPreviewElem) {
+        loadCartPreview();
+    }
+
+    // =========================
     // Client-side search/filter
     // =========================
     if (searchInput) {
@@ -65,7 +113,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     }
 
                     // Show sliding success message
-                    showMessage(`✅ ${data.product_name} added to cart!`, 'success');
+                    showMessage(`${data.product_name} added to cart!`, 'success');
 
                     setTimeout(() => {
                         button.innerHTML = originalText;
