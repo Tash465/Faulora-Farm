@@ -388,15 +388,16 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Show M-Pesa Modal
+    // Show M-Pesa Modal and scroll into view
     payWithMpesaBtn.addEventListener('click', function() {
         paymentModal.style.display = 'block';
+        paymentModal.scrollIntoView({ behavior: 'smooth', block: 'center' });
     });
 
     // Confirm Payment → Submit form → Redirect handled by Django
     confirmPaymentBtn.addEventListener('click', function() {
         paymentModal.style.display = 'none'; // Close modal
-        alert('Payment successful! Redirecting to Thank You page...');
+        alert('Payment successful! Redirecting...');
         deliveryForm.submit(); // Django view will redirect to thankyou page and clear cart
     });
 
@@ -414,4 +415,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
 });
 </script>
+
+
 {% endblock %}
