@@ -388,11 +388,16 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Show M-Pesa Modal and scroll into view
-    payWithMpesaBtn.addEventListener('click', function() {
+   payWithMpesaBtn.addEventListener('click', function() {
+    // Scroll to trigger button's position first
+    payWithMpesaBtn.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+    // Then show modal after a slight delay for smoothness
+    setTimeout(() => {
         paymentModal.style.display = 'block';
-        paymentModal.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    });
+    }, 300); // 300ms delay matches scroll
+  });
+
 
     // Confirm Payment → Submit form → Redirect handled by Django
     confirmPaymentBtn.addEventListener('click', function() {
