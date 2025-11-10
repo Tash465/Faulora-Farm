@@ -158,25 +158,40 @@
     <div class="section-divider"></div>
 
     <!-- Testimonials -->
-    <section class="section testimonials fade-in" aria-labelledby="testimonials-heading">
-        <div class="section-container">
-            <h2 id="testimonials-heading"><i class="fas fa-quote-left" aria-hidden="true"></i> What Our Customers Say</h2>
-            <div class="testimonial-carousel" aria-live="polite">
-                {% for testimonial in testimonials %}
-                <div class="testimonial {% if forloop.first %}active{% endif %}">
-                    <p>"{{ testimonial.message }}"</p>
-                    <cite>- {{ testimonial.author }}, {{ testimonial.location }}</cite>
-                </div>
-                {% endfor %}
+<section class="section testimonials fade-in" aria-labelledby="testimonials-heading">
+    <div class="section-container">
+        <h2 id="testimonials-heading"><i class="fas fa-quote-left" aria-hidden="true"></i> What Our Customers Say</h2>
+        <div class="testimonial-carousel" aria-live="polite">
+            <div class="testimonial active">
+                <p>"Faulora Farm delivers the freshest vegetables right to my doorstep. Quality and service are unmatched!"</p>
+                <cite>- Mary W., Nairobi County</cite>
             </div>
-            <div class="carousel-controls">
-                <button class="carousel-btn prev" aria-label="Previous testimonial"><i class="fas fa-chevron-left"></i></button>
-                <button class="carousel-btn next" aria-label="Next testimonial"><i class="fas fa-chevron-right"></i></button>
+            <div class="testimonial">
+                <p>"I love the organic fruits from Faulora Farm. My family enjoys healthy and tasty meals every day."</p>
+                <cite>- John K., Kiambu County</cite>
+            </div>
+            <div class="testimonial">
+                <p>"The delivery is always on time and the produce is top-notch. Highly recommended!"</p>
+                <cite>- Amina M., Mombasa County</cite>
+            </div>
+            <div class="testimonial">
+                <p>"Great variety of farm products. I especially enjoy the dairy section. Excellent service!"</p>
+                <cite>- Peter O., Nakuru County</cite>
+            </div>
+            <div class="testimonial">
+                <p>"Affordable prices and fresh products. Shopping at Faulora Farm is a delight."</p>
+                <cite>- Grace N., Kisumu County</cite>
             </div>
         </div>
-    </section>
+        <div class="carousel-controls">
+            <button class="carousel-btn prev" aria-label="Previous testimonial"><i class="fas fa-chevron-left"></i></button>
+            <button class="carousel-btn next" aria-label="Next testimonial"><i class="fas fa-chevron-right"></i></button>
+        </div>
+    </div>
+</section>
 
-    <div class="section-divider"></div>
+<div class="section-divider"></div>
+
 
     <!-- Newsletter -->
     <section class="newsletter fade-in" aria-labelledby="newsletter-heading">
