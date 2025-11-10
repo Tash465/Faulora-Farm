@@ -8,9 +8,13 @@ https://docs.djangoproject.com/en/5.2/howto/deployment/wsgi/
 """
 
 import os
-
 from django.core.wsgi import get_wsgi_application
+from dotenv import load_dotenv
 
+# Load environment variables from a .env file (for local development)
+load_dotenv()
+
+# Ensure Django knows which settings to use
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'faulora_farm.settings')
 
 application = get_wsgi_application()
