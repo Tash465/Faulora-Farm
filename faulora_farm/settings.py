@@ -14,7 +14,7 @@ SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'fallback-secret')
 DEBUG = os.environ.get('DJANGO_DEBUG', 'False') == 'True'
 
 ALLOWED_HOSTS = [
-    'faulora-farm.onrender.com',  # my Render domain
+    'faulora-farm.onrender.com',  # ✅ Render domain
     'localhost',
     '127.0.0.1'
 ]
@@ -47,7 +47,7 @@ INSTALLED_APPS = [
 # --------------------------------------------------
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',  #  Must come right after SecurityMiddleware
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # ✅ must be right after SecurityMiddleware
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -63,7 +63,7 @@ ROOT_URLCONF = 'faulora_farm.urls'
 WSGI_APPLICATION = 'faulora_farm.wsgi.application'
 
 # --------------------------------------------------
-# DATABASE (SQLite — good for Render free tier)
+# DATABASE
 # --------------------------------------------------
 DATABASES = {
     'default': {
@@ -95,24 +95,25 @@ USE_TZ = True
 # --------------------------------------------------
 STATIC_URL = '/static/'
 
-# Local static files (used in development)
-STATICFILES_DIRS = [
-    BASE_DIR / 'products' / 'static',
-]
-
-# Folder where static files are collected for deployment
+STATICFILES_DIRS = [BASE_DIR / 'products' / 'static']
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
-# Use WhiteNoise for serving static files on Render
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # --------------------------------------------------
-# MEDIA (Cloudinary)
+# 🌥️ CLOUDINARY MEDIA CONFIGURATION
 # --------------------------------------------------
-#  Remove local media paths — use Cloudinary for uploads instead
-MEDIA_URL = '/media/'  # keep for compatibility, though Cloudinary overrides it
+# Remove local media storage — Cloudinary will handle uploads directly.
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
 
-# Cloudinary configuration
+cloudinary.config(
+    cloud_name=os.environ.get('CLOUDINARY_CLOUD_NAME'),
+    api_key=os.environ.get('CLOUDINARY_API_KEY'),
+    api_secret=os.environ.get('CLOUDINARY_API_SECRET'),
+)
+
 CLOUDINARY_STORAGE = {
     'CLOUD_NAME': os.environ.get('CLOUDINARY_CLOUD_NAME'),
     'API_KEY': os.environ.get('CLOUDINARY_API_KEY'),
@@ -121,13 +122,18 @@ CLOUDINARY_STORAGE = {
 
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
+# ⚠️ Remove local media folders completely
+# (They cause images to be saved in /media instead of Cloudinary)
+# MEDIA_URL = '/media/'
+# MEDIA_ROOT = BASE_DIR / 'media'
+
 # --------------------------------------------------
 # TEMPLATES
 # --------------------------------------------------
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates'],  # Your main templates directory
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -152,13 +158,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 
-MESSAGE_TAGS = {
-    messages.ERROR: 'danger',
-}
-# --------------------------------------------------
-# SECURITY HEADERS (optional but recommended)
-# --------------------------------------------------
-CSRF_TRUSTED_ORIGINS = [
-    'https://faulora-farm.onrender.com',
-]
+MESSAGE_TAGS = {messages.ERROR: 'danger'}
 
+# --------------------------------------------------
+# SECURITY HEADERS
+# --------------------------------------------------
+CSRF_TRUSTED_ORIGINS = ['https://faulora-farm.onrender.com']
