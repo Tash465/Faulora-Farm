@@ -307,7 +307,7 @@ input:focus, textarea:focus {
                         <td>{{ item.product.name }}</td>
                         <td>
                             {% if item.product.image %}
-                            <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}">
+                           <img src="{{ item.product.image }}" alt="Image of {{ item.product.name }}" loading="lazy">
                             {% else %}
                             <img src="{% static 'images/default-product.jpg' %}" alt="No Image">
                             {% endif %}

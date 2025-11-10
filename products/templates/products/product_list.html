@@ -49,7 +49,7 @@
                 <div class="product-card hover-zoom" data-name="{{ product.name|lower }}">
                     <a href="{% url 'products:product_detail' product.pk %}" aria-label="View details for {{ product.name }}">
                         {% if product.image %}
-                            <img src="{{ product.image.url }}" alt="Image of {{ product.name }}" class="product-image" loading="lazy">
+                            <img src="{{ product.image }}" alt="Image of {{ product.name }}" class="product-image" loading="lazy">
                         {% else %}
                             <div class="product-image no-img-box">
                                 <i class="fas fa-leaf" aria-hidden="true"></i>

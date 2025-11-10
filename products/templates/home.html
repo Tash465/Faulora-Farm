@@ -4,14 +4,12 @@
 {% block title %}Welcome to Faulora Farm - Fresh, Local Produce from Kenya{% endblock %}
 
 {% block meta %}
-<!-- SEO Enhancements -->
 <meta name="description" content="Discover Faulora Farm: Kenya's freshest organic produce, hand-picked from sustainable fields. Shop fruits, vegetables, and more—farm to table!">
 <meta name="keywords" content="Kenyan produce, organic farm, fresh fruits, vegetables, sustainable farming, Faulora Farm">
 <meta property="og:title" content="Welcome to Faulora Farm">
 <meta property="og:description" content="Fresh, local produce from Kenya's lush fields. Shop now!">
 <meta property="og:image" content="{% static 'images/farm-hero.jpg' %}">
 <meta property="og:url" content="{{ request.build_absolute_uri }}">
-<!-- Structured Data for SEO -->
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -33,8 +31,9 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 <link rel="stylesheet" href="{% static 'css/home.css' %}">
 
+<main id="main-content">
 
-    <!--  Hero Section: Alluring Entry with Sunset Vibes -->
+    <!-- Hero Section -->
     <section class="hero" role="banner" aria-labelledby="hero-title">
         <div class="hero-content">
             <h1 id="hero-title">Faulora Farm</h1>
@@ -42,7 +41,6 @@
             <a href="{% url 'products:product_list' %}" class="btn hero-btn" aria-label="Shop our fresh products">Shop Now</a>
             <p class="guarantee">100% Fresh • Locally Grown • Farm to Table</p>
         </div>
-        <!-- Floating Leaves for Dynamic Allure -->
         <div class="leaf leaf-1" aria-hidden="true"></div>
         <div class="leaf leaf-2" aria-hidden="true"></div>
         <div class="leaf leaf-3" aria-hidden="true"></div>
@@ -50,10 +48,9 @@
         <div class="leaf leaf-5" aria-hidden="true"></div>
     </section>
 
-    <!-- Section Divider -->
     <div class="section-divider"></div>
 
-    <!--  Why Choose Us: Trust-Building with Organic Shapes -->
+    <!-- Why Choose Us -->
     <section class="section why-choose-us fade-in" aria-labelledby="why-heading">
         <div class="section-container">
             <h2 id="why-heading"><i class="fas fa-heart" aria-hidden="true"></i> Why Choose Faulora Farm?</h2>
@@ -77,15 +74,14 @@
         </div>
     </section>
 
-    <!-- Section Divider -->
     <div class="section-divider"></div>
 
-    <!--  Categories: Organized Grid for Easy Browsing -->
+    <!-- Categories -->
     <section class="section categories fade-in" aria-labelledby="categories-heading">
         <h2 id="categories-heading"><i class="fas fa-seedling" aria-hidden="true"></i> Explore Our Bounty</h2>
         <div class="grid">
             <a href="{% url 'products:product_list' %}?category=field_crops" class="category-btn" aria-label="Browse field crops">
-                <i class="fas fa-wheat-awn" aria-hidden="true"></i> Field Crops
+                <i class="fas fa-wheat" aria-hidden="true"></i> Field Crops
             </a>
             <a href="{% url 'products:product_list' %}?category=vegetables" class="category-btn" aria-label="Browse vegetables">
                 <i class="fas fa-carrot" aria-hidden="true"></i> Vegetables
@@ -108,7 +104,7 @@
         </div>
     </section>
 
-    <!--  Featured Products: Highlighted Showcase -->
+    <!-- Featured Products -->
     <section class="section spotlight fade-in" aria-labelledby="featured-heading">
         <h2 id="featured-heading"><i class="fas fa-sun" aria-hidden="true"></i> Featured Products</h2>
         <div class="grid">
@@ -116,14 +112,14 @@
                 <div class="product-card hover-zoom">
                     <a href="{% url 'products:product_detail' product.pk %}" aria-label="View details for {{ product.name }}">
                         {% if product.image %}
-                            <img src="{{ product.image.url }}" alt="Image of {{ product.name }}" loading="lazy">
+                            <img src="{{ product.image }}" alt="Image of {{ product.name }}" loading="lazy">
                         {% else %}
                             <img src="{% static 'images/placeholder-product.jpg' %}" alt="Placeholder image for {{ product.name }}" loading="lazy">
                         {% endif %}
                         <h3>{{ product.name }}</h3>
                     </a>
                     <p>{{ product.description|truncatewords:12 }}</p>
-                    <p><strong>Kshs {{ product.price }}</strong></p>
+                    <p><strong>KSh {{ product.price }}</strong></p>
                     <form method="post" action="{% url 'products:add_to_cart' product.pk %}">
                         {% csrf_token %}
                         <button type="submit" class="btn" aria-label="Add {{ product.name }} to cart">Order Now</button>
@@ -135,10 +131,9 @@
         </div>
     </section>
 
-    <!-- Section Divider -->
     <div class="section-divider"></div>
 
-    <!-- Our Impact: Social Proof for Allure -->
+    <!-- Impact Stats -->
     <section class="section stats fade-in" aria-labelledby="stats-heading">
         <div class="section-container">
             <h2 id="stats-heading"><i class="fas fa-chart-line" aria-hidden="true"></i> Our Impact</h2>
@@ -159,26 +154,19 @@
         </div>
     </section>
 
-    <!-- Section Divider -->
     <div class="section-divider"></div>
 
-    <!--  What Our Customers Say: Emotional Connection -->
+    <!-- Testimonials -->
     <section class="section testimonials fade-in" aria-labelledby="testimonials-heading">
         <div class="section-container">
             <h2 id="testimonials-heading"><i class="fas fa-quote-left" aria-hidden="true"></i> What Our Customers Say</h2>
-            <div class="testimonial-carousel">
-                <div class="testimonial active">
-                    <p>"Faulora Farm's mangoes are the juiciest I've ever tasted! Fresh and delivered on time."</p>
-                    <cite>- Jane, Nairobi</cite>
+            <div class="testimonial-carousel" aria-live="polite">
+                {% for testimonial in testimonials %}
+                <div class="testimonial {% if forloop.first %}active{% endif %}">
+                    <p>"{{ testimonial.message }}"</p>
+                    <cite>- {{ testimonial.author }}, {{ testimonial.location }}</cite>
                 </div>
-                <div class="testimonial">
-                    <p>"Their organic veggies have transformed my cooking. Truly farm-fresh!"</p>
-                    <cite>- Michael, Eldoret</cite>
-                </div>
-                <div class="testimonial">
-                    <p>"Sustainable farming at its best. I love supporting local!"</p>
-                    <cite>- Amina, Mombasa</cite>
-                </div>
+                {% endfor %}
             </div>
             <div class="carousel-controls">
                 <button class="carousel-btn prev" aria-label="Previous testimonial"><i class="fas fa-chevron-left"></i></button>
@@ -187,41 +175,36 @@
         </div>
     </section>
 
-    <!-- Newsletter: Call-to-Action Finale -->
+    <div class="section-divider"></div>
+
+    <!-- Newsletter -->
     <section class="newsletter fade-in" aria-labelledby="newsletter-heading">
         <h2 id="newsletter-heading"><i class="fas fa-envelope" aria-hidden="true"></i> Join Our Farm Fresh Community</h2>
         <p>Get weekly tips, exclusive deals, and harvest updates straight to your inbox.</p>
         <form action="{% url 'products:newsletter_signup' %}" method="post" novalidate>
             {% csrf_token %}
-            <input type="email" name="email" placeholder="Your Email" required aria-label="Enter your email for newsletter" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" title="Please enter a valid email address">
+            <input type="email" name="email" placeholder="Your Email" required 
+                   aria-label="Enter your email for newsletter" 
+                   pattern="[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$" 
+                   title="Please enter a valid email address">
             <button type="submit" class="btn" aria-label="Subscribe to newsletter">Subscribe</button>
         </form>
         <p class="socials">
             Follow us:
-            <a href="https://t.me/faulorafarm" target="_blank" rel="noopener" title="Telegram" aria-label="Follow us on Telegram">
-                <i class="fab fa-telegram-plane" aria-hidden="true"></i>
-            </a>
-            <a href="https://facebook.com/faulorafarm" target="_blank" rel="noopener" title="Facebook" aria-label="Follow us on Facebook">
-                <i class="fab fa-facebook" aria-hidden="true"></i>
-            </a>
-            <a href="https://instagram.com/faulorafarm" target="_blank" rel="noopener" title="Instagram" aria-label="Follow us on Instagram">
-                <i class="fab fa-instagram" aria-hidden="true"></i>
-            </a>
-            <a href="https://x.com/faulorafarm" target="_blank" rel="noopener" title="X (Twitter)" aria-label="Follow us on X">
-                <i class="fab fa-x-twitter" aria-hidden="true"></i>
-            </a>
-            <a href="https://wa.me/0791803817" target="_blank" rel="noopener" title="WhatsApp" aria-label="Contact us on WhatsApp">
-                <i class="fab fa-whatsapp" aria-hidden="true"></i>
-            </a>
+            <a href="https://t.me/faulorafarm" target="_blank" rel="noopener" aria-label="Follow us on Telegram"><i class="fab fa-telegram-plane"></i></a>
+            <a href="https://facebook.com/faulorafarm" target="_blank" rel="noopener" aria-label="Follow us on Facebook"><i class="fab fa-facebook"></i></a>
+            <a href="https://instagram.com/faulorafarm" target="_blank" rel="noopener" aria-label="Follow us on Instagram"><i class="fab fa-instagram"></i></a>
+            <a href="https://x.com/faulorafarm" target="_blank" rel="noopener" aria-label="Follow us on X"><i class="fab fa-x-twitter"></i></a>
+            <a href="https://wa.me/0791803817" target="_blank" rel="noopener" aria-label="Contact us on WhatsApp"><i class="fab fa-whatsapp"></i></a>
         </p>
     </section>
+
 </main>
 
-<!-- Back to Top: Elegant Navigation -->
-<button id="back-to-top" class="btn back-to-top" aria-label="Back to top"><i class="fas fa-arrow-up" aria-hidden="true"></i></button>
+<button id="back-to-top" class="btn back-to-top" aria-label="Back to top"><i class="fas fa-arrow-up"></i></button>
 
 <script>
-    // Back to Top Functionality
+    // Back to Top
     const backToTopBtn = document.getElementById('back-to-top');
     window.addEventListener('scroll', () => {
         backToTopBtn.style.display = window.scrollY > 300 ? 'block' : 'none';
@@ -230,16 +213,14 @@
         window.scrollTo({ top: 0, behavior: 'smooth' });
     });
 
-    // Testimonial Carousel Functionality
+    // Testimonials Carousel
     let currentTestimonial = 0;
     const testimonials = document.querySelectorAll('.testimonial');
     const prevBtn = document.querySelector('.carousel-btn.prev');
     const nextBtn = document.querySelector('.carousel-btn.next');
 
     function showTestimonial(index) {
-        testimonials.forEach((t, i) => {
-            t.classList.toggle('active', i === index);
-        });
+        testimonials.forEach((t, i) => t.classList.toggle('active', i === index));
     }
 
     prevBtn.addEventListener('click', () => {
@@ -252,7 +233,6 @@
         showTestimonial(currentTestimonial);
     });
 
-    // Auto-rotate testimonials every 5 seconds
     setInterval(() => {
         currentTestimonial = (currentTestimonial + 1) % testimonials.length;
         showTestimonial(currentTestimonial);
