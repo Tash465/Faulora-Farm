@@ -2,10 +2,14 @@
 """Django's command-line utility for administrative tasks."""
 import os
 import sys
+import dotenv  # ← Add this import
 
 
 def main():
     """Run administrative tasks."""
+    # Load environment variables from .env file (for local use)
+    dotenv.load_dotenv()  # ← Add this line
+
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'faulora_farm.settings')
     try:
         from django.core.management import execute_from_command_line
