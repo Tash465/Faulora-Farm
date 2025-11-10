@@ -1,6 +1,12 @@
 from pathlib import Path
 import os
+from dotenv import load_dotenv  # ✅ added
 from django.contrib.messages import constants as messages
+
+# --------------------------------------------------
+# LOAD ENVIRONMENT VARIABLES
+# --------------------------------------------------
+load_dotenv()  # ✅ loads variables from .env before using os.environ
 
 # --------------------------------------------------
 # BASE SETTINGS
@@ -94,16 +100,13 @@ USE_TZ = True
 # STATIC FILES
 # --------------------------------------------------
 STATIC_URL = '/static/'
-
 STATICFILES_DIRS = [BASE_DIR / 'products' / 'static']
 STATIC_ROOT = BASE_DIR / 'staticfiles'
-
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # --------------------------------------------------
 # 🌥️ CLOUDINARY MEDIA CONFIGURATION
 # --------------------------------------------------
-# Remove local media storage — Cloudinary will handle uploads directly.
 import cloudinary
 import cloudinary.uploader
 import cloudinary.api
@@ -123,7 +126,6 @@ CLOUDINARY_STORAGE = {
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 # ⚠️ Remove local media folders completely
-# (They cause images to be saved in /media instead of Cloudinary)
 # MEDIA_URL = '/media/'
 # MEDIA_ROOT = BASE_DIR / 'media'
 
@@ -157,7 +159,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # --------------------------------------------------
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
-
 MESSAGE_TAGS = {messages.ERROR: 'danger'}
 
 # --------------------------------------------------
